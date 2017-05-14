@@ -8,10 +8,16 @@ import React, {Component} from 'react';
 import {AppRegistry, StyleSheet, Text, View, Button, Animated, Switch, Image} from 'react-native';
 
 import Search from './components/Search';
+import Transit from './components/Transit';
+import Arrived from './components/Arrived';
 
 import firebase from './firebase';
 
 export default class DoubleBlindDateApp extends Component {
+  constructor() {
+    super();
+    this.state = {};
+  }
 
   componentDidMount() {
       LoginManager
@@ -40,8 +46,8 @@ export default class DoubleBlindDateApp extends Component {
         if (currentUser === 'cancelled') {
           console.log('Login cancelled');
         } else {
-          // now signed in
-          console.warn(JSON.stringify(currentUser.toJSON()));
+          
+          firebase.database().ref(`users/${currentUser.uid}/dateStatus`).on('value', this.onDateStatus);
         }
       })
       .catch((error) => {
@@ -52,6 +58,7 @@ export default class DoubleBlindDateApp extends Component {
             .auth()
             .onAuthStateChanged((user) => {
               if (user) {
+                this.state.user = user.uid;
                 firebase.messaging().getToken()
                   .then((token) => {
                     firebase.database().ref(`users/${user.uid}/fcmToken`).set(token);
@@ -60,10 +67,24 @@ export default class DoubleBlindDateApp extends Component {
             })
   }
 
+  onDateStatus = (snapshot) => {
+    this.setState({dateStatus: snapshot.val()});
+  }
+
   render() {
+    let screen;
+    console.log(this.state.dateStatus)
+    if (this.state.dateStatus === 'transit') {
+      screen = (<Transit/>)
+    } else if (this.state.dateStatus === 'arrived') {
+      screen = (<Arrived user={this.state.user}/>)
+    } else {
+      screen = (<Search dateStatus={this.state.dateStatus}/>)
+    }
+    
     return (
       <View style={styles.container}>
-        <Search/>
+        {screen}
       </View>
     );
   } 

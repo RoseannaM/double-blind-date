@@ -13,7 +13,8 @@
     "react": "16.0.0-alpha.6",
     "react-native": "0.44.0",
     "react-native-fbsdk": "^0.5.0",
-    "react-native-firebase": "^1.0.10"
+    "react-native-firebase": "^1.0.10",
+    "react-native-sound": "^0.10.1"
   },
   "devDependencies": {
     "babel-jest": "20.0.1",

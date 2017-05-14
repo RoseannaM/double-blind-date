@@ -24,8 +24,8 @@ class Search extends Component {
     toggleAvailability = () => {
         this
             .user
-            .child('isAvailable')
-            .set(!this.state.available);
+            .child('dateStatus')
+            .set(this.state.available ? 'unavailable' : 'available');
     }
 
     pushLocation = () => {
@@ -55,10 +55,10 @@ class Search extends Component {
                         .ref(`users/${user.uid}`);
                     this
                         .user
-                        .child('isAvailable')
+                        .child('dateStatus')
                         .on('value', (snapshot) => {
                             this.setState({
-                                available: snapshot.val()
+                                available: snapshot.val() === 'available'
                             });
 
                             if (this.state.available) {
@@ -165,8 +165,8 @@ const styles = StyleSheet.create({
         marginBottom: 5
     },
     heart: {
-        height: '40%',
-        width: '40%'
+        height: '100%',
+        width: '100%'
     },
     map: {
         justifyContent: 'center',
