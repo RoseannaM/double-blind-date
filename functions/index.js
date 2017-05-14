@@ -139,9 +139,9 @@ exports.matchmake = functions.https.onRequest((req, res) => {
                 admin.database().ref(`/users/${dater2}/isAvailable`).set(false);
 
                 //push notifications called here
-                pushNotification(dater1,"You have matched with a date", 
+                pushNotification(admin, dater1,"You have matched with a date", 
                     "You have matched with a date, prepare yourself" )
-                pushNotification(dater2,"You have matched with a date", 
+                pushNotification(admin, dater2,"You have matched with a date", 
                     "You have matched with a date, prepare yourself" )
                 //book uber
 

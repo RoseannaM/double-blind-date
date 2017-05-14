@@ -1,6 +1,6 @@
 const admin = require('firebase-admin');
 
-module.exports = function pushNotification (user, messageTitle, messageBody) {
+module.exports = function pushNotification (admin, user, messageTitle, messageBody) {
     //get the usertoken
     admin.database().ref(`users/${user}/fcmToken`).once('value').then((value) => {
             const registrationToken = value.snapshot();
