@@ -2,6 +2,8 @@ var functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const GeoFire = require('geofire');
 const randLocation = require('./date');
+const pushNotification = require('./pushnotification');
+
 
 admin.initializeApp(functions.config().firebase);
 
@@ -97,6 +99,18 @@ exports.matchmake = functions.https.onRequest((req, res) => {
                 });
                 admin.database().ref(`/users/${dater1}/isAvailable`).set(false);
                 admin.database().ref(`/users/${dater2}/isAvailable`).set(false);
+
+                //push notifications called here
+                pushNotification(dater1,"You have matched with a date", 
+                    "You have matched with a date, prepare yourself" )
+                pushNotification(dater2,"You have matched with a date", 
+                    "You have matched with a date, prepare yourself" )
+                //book uber
+
+                //book event
+
+        
+
                 console.log(`Found a couple: ${availableUserId} and ${key} at distance ${distance} and location ${location}`);
             });
 
