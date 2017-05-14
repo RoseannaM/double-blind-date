@@ -47,6 +47,17 @@ export default class DoubleBlindDateApp extends Component {
       .catch((error) => {
         console.log(`Login fail with error: ${error}`);
       });
+
+      firebase
+            .auth()
+            .onAuthStateChanged((user) => {
+              if (user) {
+                firebase.messaging().getToken()
+                  .then((token) => {
+                    firebase.database().ref(`users/${user.uid}/fcmToken`).set(token);
+                  });
+              }
+            })
   }
 
   render() {

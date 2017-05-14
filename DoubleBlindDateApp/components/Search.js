@@ -109,30 +109,32 @@ class Search extends Component {
                 alignItems: 'center',
                 backgroundColor
             }}>
-                <Text style={styles.welcome}>
-                    Welcome to Double Blind Date!
-                </Text>
-                <Text style={styles.instructions}></Text>
-                <Text>
-                    {JSON.stringify(this.state.text)}
-                </Text>
-                <Animated.Image
-                    source={require('../img/map.png')}
-                    style={{
-                    opacity
-                }}/>
-                <Switch
-                    style={{
-                    transform: [
-                        {
-                            scaleX: 2
-                        }, {
-                            scaleY: 2
-                        }
-                    ]
-                }}
-                    onValueChange={this.toggleAvailability}
-                    value={this.state.available}/>
+                <Animated.View style={{opacity}}>
+                    <Text style={styles.welcome}>
+                        Searching for love...
+                    </Text>
+                    <Animated.Image
+                        source={require('../img/map.png')}
+                        style={styles.map}
+                    >
+                        <Image style={styles.heart} source={require('../img/heart.gif')}/>
+                    </Animated.Image>
+                </Animated.View>
+                <View>
+                    <Text>No, I want to be single forever</Text>
+                    <Switch style={{
+                        transform: [
+                            {
+                                scaleX: 2
+                            }, {
+                                scaleY: 2
+                            }
+                            ]}}
+                        onValueChange={this.toggleAvailability}
+                        value={this.state.available}/>
+                    <Text>Yes, I want to go on a date tonight</Text>
+                </View>
+                
             </Animated.View>
         )
     }
@@ -156,5 +158,13 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         color: '#333333',
         marginBottom: 5
+    },
+    heart: {
+        height: '40%',
+        width: '40%'
+    },
+    map: {
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 });
