@@ -10,7 +10,7 @@ admin.initializeApp(functions.config().firebase);
 
 const dateRadius = 50; //km
 const randomRadius = 10; //km
-const arrivedDistance = 0.5; //km
+const arrivedDistance = 1; //km
 
 function getGeoFire() {
     return new GeoFire(admin.database().ref('/geofire'));
@@ -110,28 +110,38 @@ exports.checkDatesArrived = functions.https.onRequest((req, res) => {
         const dates = snapshot.val();
         const dateIds = Object.keys(dates);
         dateIds.forEach(dateId => {
-            const {dater1Id, dater2Id} = dates[dateId];
+            const dater1Id = dates[dateId].dater1;
+            const dater2Id = dates[dateId].dater2;
+            console.log(`Checking to see that ${dater1Id} and ${dater2Id} have arrived`);
+
             admin.database().ref(`/users/${dater1Id}`).once('value').then(function(snapshot1) {
                 const dater1 = snapshot1.val();
 
                 admin.database().ref(`/users/${dater2Id}`).once('value').then(function(snapshot2) {
                     const dater2 = snapshot2.val();
 
-                    console.log(`Checking to see that ${dater1Id} and ${dater2Id} have arrived`);
+                    console.log(`Checking to see if ${JSON.stringify(dater1)} and ${JSON.stringify(dater2)} have arrived`);
+
                     const distance = geodist(
                         {lat: dater1.location.lat, lon: dater1.location.long},
                         {lat: dater2.location.lat, lon: dater2.location.long},
                         {unit: 'km'}
                     );
-                    if (dater1.daterStatus !== 'transit' || dater2.daterStatus !== 'transit') {
+                    if (dater1.dateStatus !== 'transit' || dater2.dateStatus !== 'transit') {
+                        console.log(`
+                            ${dater1Id} and ${dater2Id} aren't both in transit.
+                            They are in states ${dater1.dateStatus} and ${dater2.dateStatus} respectively.
+                        `);
                         return;
                     }
 
                     if (distance < arrivedDistance) {
-                        admin.database().ref(`/users/${dater1}/dateStatus`).set('arrived');
-                        admin.database().ref(`/users/${dater2}/dateStatus`).set('arrived');
-                        console.log(`${dater1} and ${dater2} have arrived`);
-                    }  
+                        admin.database().ref(`/users/${dater1Id}/dateStatus`).set('arrived');
+                        admin.database().ref(`/users/${dater2Id}/dateStatus`).set('arrived');
+                        console.log(`${dater1Id} and ${dater2Id} have arrived`);
+                    } else {
+                        console.log(`${dater1Id} and ${dater2Id} have not yet arrived because the distance is ${distance}`);
+                    }
                 });
             });
         });
