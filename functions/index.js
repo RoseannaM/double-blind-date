@@ -47,22 +47,22 @@ exports.findDateLocation = functions.database.ref('/dates/{user}').onWrite(event
     });
 });
 
-exports.changeAvailability = functions.database.ref('/users/{user}/isAvailable').onWrite(event => {
-    const isAvailable = event.data.val();
-    const user = event.params.user;
-    if (!isAvailable) {
-        return admin.database().ref(`/dates`).once('value').then(function(snapshot) {
-            const dates = snapshot.val();
-            Object.keys(dates).forEach(mainDater => {
-                const date = dates[mainDater];
-                const { dater1, dater2 } = date;
-                if ((dater1 === user) || (dater2 === user)) {
-                    admin.database().ref(`/dates/${mainDater}`).remove();
-                }
-            });
-        });
-    }
-});
+// exports.changeAvailability = functions.database.ref('/users/{user}/isAvailable').onWrite(event => {
+//     const isAvailable = event.data.val();
+//     const user = event.params.user;
+//     if (!isAvailable) {
+//         return admin.database().ref(`/dates`).once('value').then(function(snapshot) {
+//             const dates = snapshot.val();
+//             Object.keys(dates).forEach(mainDater => {
+//                 const date = dates[mainDater];
+//                 const { dater1, dater2 } = date;
+//                 if ((dater1 === user) || (dater2 === user)) {
+//                     admin.database().ref(`/dates/${mainDater}`).remove();
+//                 }
+//             });
+//         });
+//     }
+// });
 
 exports.matchmake = functions.https.onRequest((req, res) => {
     const geoFire = getGeoFire();
@@ -95,6 +95,8 @@ exports.matchmake = functions.https.onRequest((req, res) => {
                     dater1,
                     dater2,
                 });
+                admin.database().ref(`/users/${dater1}/isAvailable`).set(false);
+                admin.database().ref(`/users/${dater2}/isAvailable`).set(false);
                 console.log(`Found a couple: ${availableUserId} and ${key} at distance ${distance} and location ${location}`);
             });
 
