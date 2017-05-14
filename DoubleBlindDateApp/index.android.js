@@ -4,6 +4,7 @@
  * @flow
  */
 
+import GeolocationExample from './components/get-location';
 import React, { Component } from 'react';
 import {
   AppRegistry,
@@ -26,6 +27,7 @@ export default class DoubleBlindDateApp extends Component {
           Double tap R on your keyboard to reload,{'\n'}
           Shake or press menu button for dev menu
         </Text>
+        <GeolocationExample/>
       </View>
     );
   }
