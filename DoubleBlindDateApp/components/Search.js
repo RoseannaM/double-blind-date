@@ -120,8 +120,11 @@ class Search extends Component {
                         <Image style={styles.heart} source={require('../img/heart.gif')}/>
                     </Animated.Image>
                 </Animated.View>
-                <View>
-                    <Text>No, I want to be single forever</Text>
+                <View style={{flexDirection:'row', width: '80%', justifyContent: 'space-between'}}>
+                    <View style={{width: '30%'}}>
+                        <Text style={styles.yesNo}>No</Text>
+                        <Text>I want to be single forever</Text>
+                    </View>
                     <Switch style={{
                         transform: [
                             {
@@ -132,9 +135,11 @@ class Search extends Component {
                             ]}}
                         onValueChange={this.toggleAvailability}
                         value={this.state.available}/>
-                    <Text>Yes, I want to go on a date tonight</Text>
+                    <View style={{width: '30%'}}>
+                        <Text style={styles.yesNo}>Yes</Text>
+                        <Text>I want to go on a date tonight</Text>
+                    </View>
                 </View>
-                
             </Animated.View>
         )
     }
@@ -166,5 +171,9 @@ const styles = StyleSheet.create({
     map: {
         justifyContent: 'center',
         alignItems: 'center'
+    },
+    yesNo: {
+        margin: 30,
+        fontSize: 20
     }
 });
