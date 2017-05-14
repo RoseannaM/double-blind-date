@@ -1,11 +1,16 @@
 var functions = require('firebase-functions');
 const admin = require('firebase-admin');
+const geodist = require('geodist');
 const GeoFire = require('geofire');
 const randLocation = require('./date');
+const pushNotification = require('./pushnotification');
+
 
 admin.initializeApp(functions.config().firebase);
 
 const dateRadius = 50; //km
+const randomRadius = 10; //km
+const arrivedDistance = 0.5; //km
 
 function getGeoFire() {
     return new GeoFire(admin.database().ref('/geofire'));
@@ -23,6 +28,10 @@ function forEachUser(cb) {
             cb(userId, users);
         });
     });
+}
+
+function isReadyForDate(user) {
+    return user.dateStatus === 'available';
 }
 
 // exports.convertToGeofire = functions.database.ref('/users/{user}/location').onWrite(event => {
@@ -88,12 +97,46 @@ exports.findDateLocation = functions.database.ref('/dates/{user}').onWrite(event
     return admin.database().ref(`/users`).once('value').then(function(snapshot) {
         const location1 = snapshot.val()[dater1].location;
         const location2 = snapshot.val()[dater2].location;
-        randLocation(location1, location2, dateRadius, (dateLocation) => {
+        randLocation(location1, location2, randomRadius, (dateLocation) => {
             admin.database().ref(`/dates/${mainDater}/location`).set({
                 coords: dateLocation,
             });
         });
     });
+});
+
+exports.checkDatesArrived = functions.https.onRequest((req, res) => {
+    admin.database().ref(`/dates`).once('value').then(function(snapshot) {
+        const dates = snapshot.val();
+        const dateIds = Object.keys(dates);
+        dateIds.forEach(dateId => {
+            const {dater1Id, dater2Id} = dates[dateId];
+            admin.database().ref(`/users/${dater1Id}`).once('value').then(function(snapshot1) {
+                const dater1 = snapshot1.val();
+
+                admin.database().ref(`/users/${dater2Id}`).once('value').then(function(snapshot2) {
+                    const dater2 = snapshot2.val();
+
+                    console.log(`Checking to see that ${dater1Id} and ${dater2Id} have arrived`);
+                    const distance = geodist(
+                        {lat: dater1.location.lat, lon: dater1.location.long},
+                        {lat: dater2.location.lat, lon: dater2.location.long},
+                        {unit: 'km'}
+                    );
+                    if (dater1.daterStatus !== 'transit' || dater2.daterStatus !== 'transit') {
+                        return;
+                    }
+
+                    if (distance < arrivedDistance) {
+                        admin.database().ref(`/users/${dater1}/dateStatus`).set('arrived');
+                        admin.database().ref(`/users/${dater2}/dateStatus`).set('arrived');
+                        console.log(`${dater1} and ${dater2} have arrived`);
+                    }  
+                });
+            });
+        });
+    });
+    res.send(200, 'Dates checked');
 });
 
 exports.matchmake = functions.https.onRequest((req, res) => {
@@ -105,7 +148,7 @@ exports.matchmake = functions.https.onRequest((req, res) => {
             if (!user.location) {
                 return;
             }
-            if (!user.isAvailable) {
+            if (!isReadyForDate(user)) {
                 console.log(`${userId} is not available for dating, so they will not get hitched.`);
                 return;
             }
@@ -123,7 +166,7 @@ exports.matchmake = functions.https.onRequest((req, res) => {
                     return; //that'd be sad.
                 }
 
-                if (!users[dater2].isAvailable) {
+                if (!isReadyForDate(users[dater2])) {
                     console.log(`${dater2} is not available for dating, so they will not get hitched.`);
                     return;
                 }
@@ -133,8 +176,17 @@ exports.matchmake = functions.https.onRequest((req, res) => {
                     dater1,
                     dater2,
                 });
-                admin.database().ref(`/users/${dater1}/isAvailable`).set(false);
-                admin.database().ref(`/users/${dater2}/isAvailable`).set(false);
+                admin.database().ref(`/users/${dater1}/dateStatus`).set('transit');
+                admin.database().ref(`/users/${dater2}/dateStatus`).set('transit');
+
+                //push notifications called here
+                pushNotification(admin, dater1,"You have matched with a date", 
+                    "You have matched with a date, prepare yourself" )
+                pushNotification(admin, dater2,"You have matched with a date", 
+                    "You have matched with a date, prepare yourself" )
+                //book uber
+
+                //book event
                 console.log(`Found a couple: ${dater1} and ${dater2} at distance ${distance} and location ${location}`);
             });
 
