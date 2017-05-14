@@ -8,9 +8,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:786866170212:android:ad6820edfef908b4",
+        "mobilesdk_app_id": "1:786866170212:android:cf3374bd2ba198bd",
         "android_client_info": {
-          "package_name": "idea.terrible.DoubleBlindDateApp"
+          "package_name": "com.doubleblinddateapp"
         }
       },
       "oauth_client": [
