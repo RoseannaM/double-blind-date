@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/RoseannaM/double-blind-date/issues"
   },
-  "homepage": "https://github.com/RoseannaM/double-blind-date#readme"
+  "homepage": "https://github.com/RoseannaM/double-blind-date#readme",
+  "dependencies": {
+    "geofire": "^4.1.2"
+  }
 }
