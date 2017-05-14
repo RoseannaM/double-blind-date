@@ -29,13 +29,16 @@ function obtainAccess() {
     res.on('data', function (chunk) {
       body += chunk;  //returns your-redirect-uri/?code=<authorization_code>?
     });
+    res.on('end', function() {
+      let authCode = JSON.parse(body);
+    });
     res.on('error', function (error) {
       console.log ("Error is: " + error.message);
     });
     req.write(data);
     req.end();
   });
-  return body;
+  return authCode;
 }
 
 //get access token once provided with authCode from obtainAccess();
