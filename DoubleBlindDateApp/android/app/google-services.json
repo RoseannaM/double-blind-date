@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "786866170212",
+    "firebase_url": "https://double-blind-date.firebaseio.com",
+    "project_id": "double-blind-date",
+    "storage_bucket": "double-blind-date.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:786866170212:android:cf3374bd2ba198bd",
+        "android_client_info": {
+          "package_name": "com.doubleblinddateapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "786866170212-bic7jmr2a2if8pems31vvg3p2lnvqbbg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAULXGPx2R1oD7oM_iVCXC7c9v750EhHO0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
