@@ -8,13 +8,6 @@ import React, {Component} from 'react';
 import {AppRegistry, StyleSheet, Text, View, Button, Animated, Switch, Image} from 'react-native';
 
 import GeolocationExample from './components/get-location';
-import React, { Component } from 'react';
-import {
-  AppRegistry,
-  StyleSheet,
-  Text,
-  View
-} from 'react-native';
 import RNFirebase from 'react-native-firebase';
 
 const configurationOptions = {
@@ -122,13 +115,9 @@ export default class DoubleBlindDateApp extends Component {
         <Text>
           {JSON.stringify(this.state.text)}
         </Text>
-<<<<<<< HEAD
         <GeolocationExample/>
-      </View>
-=======
         <Animated.Image source={require('./img/map.png')} style={{opacity}}/>
       </Animated.View>
->>>>>>> ff104eedffffdb03124d43fd342310d1788c0a8f
     );
   }
 
