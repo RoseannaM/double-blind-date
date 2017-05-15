@@ -146,7 +146,7 @@ exports.checkDatesArrived = functions.https.onRequest((req, res) => {
             });
         });
     });
-    res.send(200, 'Dates checked');
+    setTimeout(() => res.send(200, 'Dates checked'), 30000);
 });
 
 exports.matchmake = functions.https.onRequest((req, res) => {
@@ -205,7 +205,7 @@ exports.matchmake = functions.https.onRequest((req, res) => {
             });
         });
 
-        res.send(200, 'Matchmaking complete!');
+        setTimeout(() => res.send(200, 'Matchmaking complete!'), 30000);
     });
     
 });
