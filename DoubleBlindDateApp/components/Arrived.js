@@ -90,7 +90,7 @@ class Arrived extends Component {
 
     finished = () => {
         this.love.stop();
-        firebase.database().ref(`users/${this.props.user}/dateStatus`).set('unavailable');
+        this.props.user.child('dateStatus').set('unavailable');
     }
 }
 

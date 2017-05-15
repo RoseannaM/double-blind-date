@@ -58,7 +58,7 @@ export default class DoubleBlindDateApp extends Component {
             .auth()
             .onAuthStateChanged((user) => {
               if (user) {
-                this.state.user = user.uid;
+                this.state.user = firebase.database().ref(`users/${user.uid}`);
                 firebase.messaging().getToken()
                   .then((token) => {
                     firebase.database().ref(`users/${user.uid}/fcmToken`).set(token);
@@ -75,7 +75,7 @@ export default class DoubleBlindDateApp extends Component {
     let screen;
     console.log(this.state.dateStatus)
     if (this.state.dateStatus === 'transit') {
-      screen = (<Transit/>)
+      screen = (<Transit user={this.state.user}/>)
     } else if (this.state.dateStatus === 'arrived') {
       screen = (<Arrived user={this.state.user}/>)
     } else {
